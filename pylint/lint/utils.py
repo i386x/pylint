@@ -72,16 +72,22 @@ def get_fatal_error_message(filepath: str, issue_template_path: Path) -> str:
 
 
 def _patch_sys_path(args: Sequence[str]) -> list[str]:
+    print(f"_patch_sys_path({args}):")
     original = list(sys.path)
+    print(f"    orignal: {original}")
     changes = []
     seen = set()
     for arg in args:
+        print(f"        arg: {arg}")
         path = get_python_path(arg)
+        print(f"        path: {path}")
         if path not in seen:
             changes.append(path)
+            print(f"        changes: {changes}")
             seen.add(path)
 
     sys.path[:] = changes + sys.path
+    print(f"    sys.path: {sys.path}")
     return original
 
 
