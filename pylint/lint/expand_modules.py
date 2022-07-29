@@ -179,4 +179,8 @@ def expand_modules(
                         "basename": modname,
                     }
                 )
+    print("===================================================================")
+    print("===================================================================")
+    print(f"[INSPECT]: result = {result}")
+    print(f"[INSPECT]: errors = {errors}")
     return result, errors
