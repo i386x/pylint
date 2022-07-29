@@ -75,43 +75,61 @@ def expand_modules(
     path = sys.path.copy()
 
     for something in files_or_modules:
+        print(f"[INSPECT]: something = {something}")
         basename = os.path.basename(something)
+        print(f"[INSPECT]: basename = {basename}")
         if _is_ignored_file(
             something, ignore_list, ignore_list_re, ignore_list_paths_re
         ):
             continue
         module_path = get_python_path(something)
+        print(f"[INSPECT]: module_path = {module_path}")
         additional_search_path = [".", module_path] + path
+        print(f"[INSPECT]: additional_search_path = {additional_search_path}")
         if os.path.isfile(something) or os.path.exists(
             os.path.join(something, "__init__.py")
         ):
             # this is a file or a directory with an explicit __init__.py
+            print("[INSPECT]: file or directory case")
             try:
+                print(f"[INSPECT]: trying modpath_from_file({something}, {additional_search_path})")
                 modname = ".".join(
                     modutils.modpath_from_file(something, path=additional_search_path)
                 )
+                print(f"[INSPECT]: modname = {modname}")
             except ImportError:
                 modname = os.path.splitext(basename)[0]
+                print(f"[INSPECT]: ImportError, modname = {modname}")
             if os.path.isdir(something):
                 filepath = os.path.join(something, "__init__.py")
+                print(f"[INSPECT]: isdir, filepath = {filepath}")
             else:
                 filepath = something
+                print(f"[INSPECT]: not isdir, filepath = {filepath}")
         else:
             # suppose it's a module or package
             modname = something
+            print("[INSPECT]: module or package case")
+            print(f"[INSPECT]: modname = {modname}")
             try:
+                print(f"[INSPECT]: trying file_from_modpath({modname.split('.')}, {additional_search_path})")
                 filepath = modutils.file_from_modpath(
                     modname.split("."), path=additional_search_path
                 )
+                print(f"[INSPECT]: filepath = {filepath}")
                 if filepath is None:
                     continue
             except (ImportError, SyntaxError) as ex:
                 # The SyntaxError is a Python bug and should be
                 # removed once we move away from imp.find_module: https://bugs.python.org/issue10588
+                print(f"[INSPECT]: {ex.__class__.__name__}")
                 errors.append({"key": "fatal", "mod": modname, "ex": ex})
                 continue
         filepath = os.path.normpath(filepath)
         modparts = (modname or something).split(".")
+        print("--------------------------------------------------------------")
+        print(f"[INPSECT]: filepath = {filepath}")
+        print(f"[INSPECT]: modparts = {modparts}")
         try:
             spec = modutils.file_info_from_modpath(
                 modparts, path=additional_search_path
