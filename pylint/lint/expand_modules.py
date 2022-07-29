@@ -86,9 +86,10 @@ def expand_modules(
         print(f"[INSPECT]: module_path = {module_path}")
         additional_search_path = [".", module_path] + path
         print(f"[INSPECT]: additional_search_path = {additional_search_path}")
-        if os.path.isfile(something) or os.path.exists(
-            os.path.join(something, "__init__.py")
-        ):
+        if os.path.exists(something):
+        #if os.path.isfile(something) or os.path.exists(
+        #    os.path.join(something, "__init__.py")
+        #):
             # this is a file or a directory with an explicit __init__.py
             print("[INSPECT]: file or directory case")
             try:
